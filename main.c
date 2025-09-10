@@ -341,12 +341,12 @@ void modifier()
         int le_choix;
         do
         {
-        Joueur joueurs[1];
-        joueurs[0] = equipe[index];
-        afficherLesJoueur(joueurs, 1);
-        
-        int isValide = 0;
-        
+            Joueur joueurs[1];
+            joueurs[0] = equipe[index];
+            afficherLesJoueur(joueurs, 1);
+
+            int isValide = 0;
+
             printf("\n\n\n");
             printf("                             ****************************************************************\n");
             printf("                             |                   Modifier un joueur                         |\n");
@@ -412,6 +412,93 @@ void modifier()
         printf(RESET "\nAppuyez sur Entrer pour continuer...");
         getchar();
     }
+}
+
+void Supprimer()
+{
+    int le_choix;
+    do
+    {
+        system("cls");
+        printf("\n\n\n");
+        printf("                          |**************************************************|   \n");
+        printf("                          |               Supprimer un joueur                |   \n");
+        printf("                          |                                                  |   \n");
+        printf("                          |**************************************************|   \n");
+        printf("                          |                                                  |   \n");
+        printf("                          | 1. Supprimer un joueur par ID                    |   \n");
+        printf("                          |                                                  |   \n");
+        printf("                          | 2. Supprimer un joueur par Nom                   |   \n");
+        printf("                          |                                                  |   \n");
+        printf("                          | 3. Quite                                         |   \n");
+        printf("                          |                                                  |   \n");
+        printf("                          |**************************************************|  \n\n\n");
+        printf("Quel est votre choix ? : ");
+        scanf("%d", &le_choix);
+        char confirme;
+        Joueur joueurs[1];
+        switch (le_choix)
+        {
+        case 1:
+            int id;
+            printf("Entrez l'ID du joueur a supprimer : ");
+            scanf("%d", &id);
+            int indexI = rechercherById(id);
+            if (indexI != -1)
+            {
+                joueurs[0] = equipe[indexI];
+                afficherLesJoueur(joueurs, 1);
+                printf(RED "Etes-vous sur de vouloir supprimer ce joueur ? (Y/N) : " RESET);
+                scanf(" %c", &confirme);
+                if (confirme == 'Y' || confirme == 'y')
+                {
+                    for (int i = indexI; i < conteur - 1; i++)
+                    {
+                        equipe[i] = equipe[i + 1];
+                    }
+                    conteur--;
+                }
+            }
+            else
+            {
+                printf(RED "Aucun joueur avec l'ID %d dans l'equipe !!!" RESET, id);
+                getchar();
+                printf(RESET "\nAppuyez sur Entrer pour continuer...");
+                getchar();
+            }
+            break;
+        case 2:
+            char nom[50];
+            printf("Entrez l'nom du joueur a supprimer ; ");
+            scanf("%s",nom);
+            int indexN = rechercherByNom(nom);
+            if (indexN != -1)
+            {
+                joueurs[0] = equipe[indexN];
+                afficherLesJoueur(joueurs, 1);
+                printf(RED "Etes-vous sur de vouloir supprimer ce joueur ? (Y/N) : " RESET);
+                scanf(" %c", &confirme);
+                if (confirme == 'Y' || confirme == 'y')
+                {
+                    for (int i = indexN; i < conteur - 1; i++)
+                    {
+                        equipe[i] = equipe[i + 1];
+                    }
+                    conteur--;
+                }
+            }
+            else
+            {
+                printf(RED "Aucun joueur  %s dans l'equipe !!!" RESET, nom);
+                getchar();
+                printf(RESET "\nAppuyez sur Entrer pour continuer...");
+                getchar();
+            }
+        default:
+            break;
+        }
+
+    } while (le_choix != 3);
 }
 
 void menuAfficher()
@@ -583,7 +670,8 @@ int menu()
         printf(YELLOW "                          |       2. Afficher les joueur                    |   \n" RESET);
         printf(BLUE "                          |       3. Rechercher un joueur                   |   \n" RESET);
         printf(CYAN "                          |       4. Modifier un joueur                      |   \n" RESET);
-        printf("                          |       5. Quitter                                |   \n");
+        printf(RED "                          |       5. Supprimer un joueur                     |   \n" RESET);
+        printf("                          |       6. Quitter                                |   \n");
         printf("                          |                                                 |   \n");
         printf("                          |*************************************************|   \n\n\n");
         printf("Quel est votre choix ? : ");
@@ -603,11 +691,14 @@ int menu()
         case 4:
             modifier();
             break;
+        case 5:
+            Supprimer();
+            break;
         default:
             break;
         }
 
-    } while (le_choi != 5);
+    } while (le_choi != 6);
 }
 
 int main()
