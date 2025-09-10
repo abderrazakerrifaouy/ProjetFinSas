@@ -24,18 +24,18 @@ Joueur equipe[100];
 int conteur = 0;
 int genereId = 0;
 
-int StringIsValide(char nom[])
+int StringIsValide(char str[])
 {
     int isValide = 0;
-    for (int i = 0; i < strlen(nom); i++)
+    for (int i = 0; i < strlen(str); i++)
     {
-        if (nom[i] != ' ')
+        if (str[i] != ' ')
         {
             isValide = 1;
             break;
         }
     }
-    if (strlen(nom) < 3)
+    if (strlen(str) < 3)
     {
         isValide = 0;
     }
@@ -68,6 +68,22 @@ int validePoste(char poste[])
         if (strcmp(poste, postes[i]) == 0)
         {
             return 1;
+        }
+    }
+    return 0;
+}
+
+int checkString(char str1[], char str2[])
+{
+    for (int i = 0; i < strlen(str1); i++)
+    {
+        if (str1[i] < str2[i])
+        {
+            return 1;
+        }
+        else if (str1[i] > str2[i])
+        {
+            return 0;
         }
     }
     return 0;
@@ -147,10 +163,10 @@ void ajouterUnJoueur(int i)
         scanf("%d", &equipe[conteur].age);
         printf("                          |                                                                               |\n");
 
-        isValide = (equipe[conteur].age > 0 && equipe[conteur].age <= 99);
+        isValide = (equipe[conteur].age > 16 && equipe[conteur].age <= 45);
         if (!isValide)
         {
-            printf("                          |      " RED "L'age doit etre entre 1 et 99 !!!" RESET "                                        |\n");
+            printf("                          |      " RED "L'age doit etre entre 16 et 45 !!!" RESET "                                        |\n");
             printf("                          |                                                                               |\n");
         }
     } while (!isValide);
@@ -177,6 +193,181 @@ void ajouterUnJoueur(int i)
     getchar();
     printf("\nAppuyez sur Entrer pour continuer...");
     getchar();
+}
+
+void afficherToutLesJoueur(Joueur joueurs[] , int nJoueur)
+{
+    system("cls");
+    if (nJoueur > 0)
+    {
+        printf(YELLOW "                     +****************************************************************************************************************************+\n");
+        printf("                    ||                ||                ||                ||                ||                ||                ||                ||\n");
+        printf("                    || %-*s || %-*s || %-*s || %-*s || %-*s || %-*s || %-*s ||\n", 14, "id", 14, "nom", 14, "prenom", 14, "Numero Maillot", 14, "Post", 14, "Age", 14, "buts");
+        printf("                    ||                ||                ||                ||                ||                ||                ||                ||\n");
+        printf("                    +*****************************************************************************************************************************+\n");
+        printf("                    ||                ||                ||                ||                ||                ||                ||                ||\n");
+
+        for (int i = 0; i < nJoueur; i++)
+        {
+            printf("                    || %-*d || %-*s || %-*s || %-*d || %-*s || %-*d || %-*d ||\n", 14, joueurs[i].id, 14, joueurs[i].nom, 14, joueurs[i].Prenom, 14, joueurs[i].numeroMaillot, 14, joueurs[i].poste, 14, joueurs[i].age, 14, joueurs[i].buts);
+            printf("                    ||                ||                ||                ||                ||                ||                ||                ||\n");
+        }
+        printf("                    +*****************************************************************************************************************************+\n");
+    }
+    else
+    {
+        printf(RED "Aucun joueur dans l'equipe !!!" RESET);
+    }
+    getchar();
+    printf(RESET "\nAppuyez sur Entrer pour continuer...");
+    getchar();
+}
+
+void afficherJoueursByNom()
+{
+    Joueur joueurs[100];
+    for (int i = 0; i < conteur; i++)
+    {
+        joueurs[i] = equipe[i];
+    }
+    for (int i = 0; i < conteur; i++)
+    {
+        for (int j = 0; j < conteur - 1; j++)
+        {
+            if (!checkString(joueurs[j].nom, joueurs[j + 1].nom))
+            {
+                Joueur tmp = joueurs[j];
+                joueurs[j] = joueurs[j + 1];
+                joueurs[j + 1] = tmp;
+            }
+        }
+    }
+    afficherToutLesJoueur(joueurs , conteur);
+}
+
+void affcherJoueursByAge()
+{
+    Joueur joueurs[100];
+    for (int i = 0; i < conteur; i++)
+    {
+        joueurs[i] = equipe[i];
+    }
+    for (int i = 0; i < conteur; i++)
+    {
+        for (int j = 0; j < conteur - 1; j++)
+        {
+            if (joueurs[j].age > joueurs[j + 1].age)
+            {
+                Joueur tmp = joueurs[j];
+                joueurs[j] = joueurs[j + 1];
+                joueurs[j + 1] = tmp;
+            }
+        }
+    }
+    afficherToutLesJoueur(joueurs , conteur);
+}
+
+void afficherJoueursByPoste()
+{
+    printf(" les postes sont : gardien, defenseur, milieu, attaquant \n");
+    char poste[20];
+    printf("Entrez le poste : ");
+    scanf("%s", poste);
+    if (validePoste(poste))
+    {
+        Joueur joueurs[100];
+        int c = 0;
+        for (int i = 0; i < conteur; i++)
+        {
+            if (strcmp(poste, equipe[i].poste) == 0)
+            {
+                joueurs[c] = equipe[i];
+                c++;
+            }
+        }
+        if (c > 0)
+        {
+            afficherToutLesJoueur(joueurs , c);
+        }
+        else
+        {
+            printf(RED "Aucun joueur avec le poste %s dans l'equipe !!!" RESET, poste);
+            getchar();
+            printf(RESET "\nAppuyez sur Entrer pour continuer...");
+            getchar();
+        }
+    }
+    else
+    {
+        printf(RED "Ce poste est invalide !!!" RESET);
+        getchar();
+        printf(RESET "\nAppuyez sur Entrer pour continuer...");
+        getchar();
+    }
+}
+
+int rechercherById(int id)
+{
+    for (int i = 0; i < conteur; i++)
+    {
+        if (equipe[i].id == id)
+        {
+            return i;
+        }
+    }
+    return -1;
+}
+
+int rechercherByNom(char nom[])
+{
+    for (int i = 0; i < conteur; i++)
+    {
+        if (strcmp(nom, equipe[i].nom) == 0)
+        {
+            return i;
+        }
+    }
+    return -1;
+}
+
+void menuAfficher()
+{
+    int le_choi;
+    do
+    {
+        system("cls");
+        printf("\n\n\n");
+        printf("                          |**************************************************|   \n");
+        printf("                          |               Afficher un joueur                 |   \n");
+        printf("                          |                                                  |   \n");
+        printf("                          |**************************************************|   \n");
+        printf("                          |                                                  |   \n");
+        printf("                          | 1.Trier les joueurs par ordre alphabetique (Nom) |   \n");
+        printf("                          |                                                  |   \n");
+        printf("                          | 2. Trier les joueurs par age.                    |   \n");
+        printf("                          |                                                  |   \n");
+        printf("                          | 3.Afficher les joueurs par poste                 |   \n");
+        printf("                          |                                                  |   \n");
+        printf("                          | 4. Quite                                         |   \n");
+        printf("                          |                                                  |   \n");
+        printf("                          |**************************************************|  \n\n\n");
+        printf("Quel est votre choix ? : ");
+        scanf("%d", &le_choi);
+
+        switch (le_choi)
+        {
+        case 1:
+            afficherJoueursByNom();
+            break;
+        case 2:
+            affcherJoueursByAge();
+            break;
+        case 3:
+            afficherJoueursByPoste();
+        default:
+            break;
+        }
+    } while (le_choi != 4);
 }
 
 void menuAjouterUnJoueur()
@@ -224,31 +415,72 @@ void menuAjouterUnJoueur()
     } while (le_choi != 3);
 }
 
-void afficherToutLesJoueur()
+void menuRechercher()
 {
-    system("cls");
-    if (conteur > 0)
+    int le_choi;
+    do
     {
-        printf("                     +************************************************************************************************************************************************************************************+\n");
-        printf("                    ||                        ||                        ||                        ||                        ||                        ||                        ||                        ||\n");
-        printf("                    || %-*s || %-*s || %-*s || %-*s || %-*s || %-*s || %-*s ||\n", 22, "id", 22, "nom", 22, "prenom", 22, "Numero Maillot", 22, "Post", 22, "Age", 22, "buts");
-        printf("                    ||                        ||                        ||                        ||                        ||                        ||                        ||                        ||\n");
-        printf("                    +*************************************************************************************************************************************************************************************+\n");
-        printf("                    ||                        ||                        ||                        ||                        ||                        ||                        ||                        ||\n");
 
-        for (int i = 0; i < conteur; i++)
+        system("cls");
+        printf("\n\n\n");
+        printf("                          |**************************************************|   \n");
+        printf("                          |               Rechercher un joueur               |   \n");
+        printf("                          |                                                  |   \n");
+        printf("                          |**************************************************|   \n");
+        printf("                          |                                                  |   \n");
+        printf("                          | 1. Rechercher un joueur par ID                   |   \n");
+        printf("                          |                                                  |   \n");
+        printf("                          | 2. Rechercher un joueur par Nom                  |   \n");
+        printf("                          |                                                  |   \n");
+        printf("                          | 3. Quite                                         |   \n");
+        printf("                          |                                                  |   \n");
+        printf("                          |**************************************************|  \n\n\n");
+        printf("Quel est votre choix ? : ");
+        scanf("%d", &le_choi);
+        switch (le_choi)
         {
-            printf("                    || %-*d || %-*s || %-*s || %-*d || %-*s || %-*d || %-*d ||\n", 22, equipe[i].id, 22, equipe[i].nom, 22, equipe[i].Prenom, 22, equipe[i].numeroMaillot, 22, equipe[i].poste, 22, equipe[i].age, 22, equipe[i].buts);
-            printf("                    ||                        ||                        ||                        ||                        ||                        ||                        ||                        ||\n");
+        case 1:
+            int id;
+            printf("Entrez l'ID du joueur : ");
+            scanf("%d", &id);
+            int indexI = rechercherById(id);
+            if (indexI != -1)
+            {
+                Joueur joueurs[1];
+                joueurs[0] = equipe[indexI];
+                afficherToutLesJoueur(joueurs , 1);
+            }
+            else
+            {
+                printf(RED "Aucun joueur avec l'ID %d dans l'equipe !!!" RESET, id);
+                getchar();
+                printf(RESET "\nAppuyez sur Entrer pour continuer...");
+                getchar();
+            }
+            break;
+        case 2:
+            char nom[50];
+            printf("Entrez l'nom du joueur ");
+            scanf("%s", nom);
+            int indexN = rechercherByNom(nom);
+            if (indexN != -1)
+            {
+                Joueur joueurs[1];
+                joueurs[0] = equipe[indexN];
+                afficherToutLesJoueur(joueurs , 1);
+            }
+            else
+            {
+                printf(RED "Aucun joueur avec l'nom %s dans l'equipe !!!" RESET, nom);
+                getchar();
+                printf(RESET "\nAppuyez sur Entrer pour continuer...");
+                getchar();
+            }
+            break;
+        default:
+            break;
         }
-    }
-    else
-    {
-        printf(RED "Aucun joueur dans l'equipe !!!" RESET);
-    }
-    getchar();
-    printf("\nAppuyez sur Entrer pour continuer...");
-    getchar();
+    } while (le_choi != 3);
 }
 
 int menu()
@@ -264,8 +496,9 @@ int menu()
         printf("                          |*************************************************|   \n");
         printf("                          |                                                 |   \n");
         printf(GREEN "                          |       1. Ajouter une joueur                     |   \n" RESET);
-        printf(YELLOW "                          |       2. Afficher tous les joueur               |   \n" RESET);
-        printf("                          |       3. Quitter                                |   \n");
+        printf(YELLOW "                          |       2. Afficher les joueur                    |   \n" RESET);
+        printf(BLUE "                          |       3. Rechercher un joueur                   |   \n" RESET);
+        printf("                          |       4. Quitter                                |   \n");
         printf("                          |                                                 |   \n");
         printf("                          |*************************************************|   \n\n\n");
         printf("Quel est votre choix ? : ");
@@ -277,13 +510,19 @@ int menu()
             menuAjouterUnJoueur();
             break;
         case 2:
-            afficherToutLesJoueur();
+            menuAfficher();
+            break;
+        case 3:
+            menuRechercher();
+            break;
         default:
             break;
         }
 
-    } while (le_choi != 3);
+    } while (le_choi != 4);
 }
+
+
 
 int main()
 {
