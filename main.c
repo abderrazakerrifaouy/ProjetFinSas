@@ -8,6 +8,7 @@
 #define BLUE "\033[0;34m"
 #define CYAN "\033[0;36m"
 #define RESET "\033[0m"
+#define CYAN_title "\033[1;36m"
 
 typedef struct
 {
@@ -197,7 +198,7 @@ void ajouterUnJoueur(int i)
 
 void afficherLesJoueur(Joueur joueurs[], int nJoueur)
 {
-    system("cls");
+
     if (nJoueur > 0)
     {
         printf(YELLOW "                     +****************************************************************************************************************************+\n");
@@ -242,6 +243,7 @@ void afficherJoueursByNom()
             }
         }
     }
+    system("cls");
     afficherLesJoueur(joueurs, conteur);
 }
 
@@ -264,6 +266,7 @@ void affcherJoueursByAge()
             }
         }
     }
+    system("cls");
     afficherLesJoueur(joueurs, conteur);
 }
 
@@ -287,6 +290,7 @@ void afficherJoueursByPoste()
         }
         if (c > 0)
         {
+            system("cls");
             afficherLesJoueur(joueurs, c);
         }
         else
@@ -343,6 +347,7 @@ void modifier()
         {
             Joueur joueurs[1];
             joueurs[0] = equipe[index];
+            system("cls");
             afficherLesJoueur(joueurs, 1);
 
             int isValide = 0;
@@ -370,7 +375,7 @@ void modifier()
                     isValide = validePoste(equipe[index].poste);
                     if (!isValide)
                     {
-                        printf(RED "Ce poste est invalide !!!" RESET);
+                        printf(RED "Ce poste est invalide !!!\n" RESET);
                     }
                 } while (!isValide);
                 break;
@@ -383,7 +388,7 @@ void modifier()
                     isValide = (equipe[index].age > 16 && equipe[index].age <= 45);
                     if (!isValide)
                     {
-                        printf(RED "L'age doit etre entre 16 et 45 !!!" RESET);
+                        printf(RED "L'age doit etre entre 16 et 45 !!!\n" RESET);
                     }
                 } while (!isValide);
                 break;
@@ -396,7 +401,7 @@ void modifier()
                     isValide = (equipe[index].buts >= 0);
                     if (!isValide)
                     {
-                        printf(RED "Le nombre de buts ne peut pas etre negatif !!!" RESET);
+                        printf(RED "Le nombre de buts ne peut pas etre negatif !!!\n" RESET);
                     }
                 } while (!isValide);
                 break;
@@ -441,12 +446,15 @@ void Supprimer()
         {
         case 1:
             int id;
+
             printf("Entrez l'ID du joueur a supprimer : ");
             scanf("%d", &id);
             int indexI = rechercherById(id);
             if (indexI != -1)
             {
                 joueurs[0] = equipe[indexI];
+                system("cls");
+                printf("Le joueur a supprimer est : \n");
                 afficherLesJoueur(joueurs, 1);
                 printf(RED "Etes-vous sur de vouloir supprimer ce joueur ? (Y/N) : " RESET);
                 scanf(" %c", &confirme);
@@ -470,11 +478,13 @@ void Supprimer()
         case 2:
             char nom[50];
             printf("Entrez l'nom du joueur a supprimer ; ");
-            scanf("%s",nom);
+            scanf("%s", nom);
             int indexN = rechercherByNom(nom);
             if (indexN != -1)
             {
                 joueurs[0] = equipe[indexN];
+                system("cls");
+                printf("Le joueur a supprimer est : \n");
                 afficherLesJoueur(joueurs, 1);
                 printf(RED "Etes-vous sur de vouloir supprimer ce joueur ? (Y/N) : " RESET);
                 scanf(" %c", &confirme);
@@ -619,6 +629,8 @@ void menuRechercher()
             {
                 Joueur joueurs[1];
                 joueurs[0] = equipe[indexI];
+                system("cls");
+                printf("Le joueur avec l'ID %d est : \n", id);
                 afficherLesJoueur(joueurs, 1);
             }
             else
@@ -631,13 +643,15 @@ void menuRechercher()
             break;
         case 2:
             char nom[50];
-            printf("Entrez l'nom du joueur ");
+            printf("Entrez l'nom du joueur : ");
             scanf("%s", nom);
             int indexN = rechercherByNom(nom);
             if (indexN != -1)
             {
                 Joueur joueurs[1];
                 joueurs[0] = equipe[indexN];
+                system("cls");
+                printf("Le joueur avec le nom %s est : \n", nom);
                 afficherLesJoueur(joueurs, 1);
             }
             else
@@ -654,26 +668,140 @@ void menuRechercher()
     } while (le_choi != 3);
 }
 
-int menu()
+void nombreTotalJoueur()
+{
+    printf("le nombre total des joueurs est : %d", conteur);
+    getchar();
+    printf(RESET "\nAppuyez sur Entrer pour continuer...");
+    getchar();
+}
+
+void moyenAge()
+{
+    if (conteur > 0)
+    {
+        int somme = 0;
+        for (int i = 0; i < conteur; i++)
+        {
+            somme += equipe[i].age;
+        }
+        printf("le moyen age des joueurs est : %.2f", (float)somme / conteur);
+    }
+    else
+    {
+        printf(RED "Aucun joueur dans l'equipe !!!" RESET);
+    }
+    getchar();
+    printf(RESET "\nAppuyez sur Entrer pour continuer...");
+    getchar();
+}
+
+void afficherJoueursPlusDeXButs()
+{
+    int numBut;
+    Joueur joueurs[100];
+    int c = 0;
+    printf("Entrez le nombre de buts : ");
+    scanf("%d", &numBut);
+
+    for (int i = 0; i < conteur; i++)
+    {
+        if (equipe[i].buts > numBut)
+        {
+            joueurs[c] = equipe[i];
+            c++;
+        }
+    }
+    if (c > 0)
+    {
+        system("cls");
+        printf("les joueurs avec plus de %d buts sont : \n", numBut);
+        afficherLesJoueur(joueurs, c);
+    }
+    else
+    {
+        printf(RED "Aucun joueur avec plus de %d buts dans l'equipe !!!" RESET, numBut);
+        getchar();
+        printf(RESET "\nAppuyez sur Entrer pour continuer...");
+        getchar();
+    }
+}
+
+void meilleurButeur()
+{
+    Joueur joueurs[100];
+    joueurs[0] = equipe[0];
+    for (int i = 1; i < conteur; i++)
+    {
+        if (joueurs[0].buts < equipe[i].buts)
+        {
+            joueurs[0] = equipe[i];
+        }
+    }
+    system("cls");
+    printf("le meilleur buteur est : \n");
+    afficherLesJoueur(joueurs, 1);
+}
+
+void joueurPlusAge()
+{
+    Joueur joueurs[100];
+    joueurs[0] = equipe[0];
+    for (int i = 1; i < conteur; i++)
+    {
+        if (joueurs[0].age < equipe[i].age)
+        {
+            joueurs[0] = equipe[i];
+        }
+    }
+    system("cls");
+    printf("le joueur le plus age est : \n");
+    afficherLesJoueur(joueurs, 1);
+}
+
+void joueurPlusJeune()
+{
+    Joueur joueurs[100];
+    joueurs[0] = equipe[0];
+    for (int i = 1; i < conteur; i++)
+    {
+        if (joueurs[0].age > equipe[i].age)
+        {
+            joueurs[0] = equipe[i];
+        }
+    }
+    system("cls");
+    printf("le joueur le plus jeune est : \n");
+    afficherLesJoueur(joueurs, 1);
+}
+
+void menu()
 {
     int le_choi;
     do
     {
         system("cls");
-        printf(YELLOW "\n\n\n");
+        printf("\n\n\n");
         printf("                          |*************************************************|   \n");
-        printf("                          |                   Menu                          |   \n");
+        printf("                          |                   " CYAN_title "Menu" RESET "                          |   \n");
         printf("                          |                                                 |   \n");
         printf("                          |*************************************************|   \n");
         printf("                          |                                                 |   \n");
-        printf(GREEN "                          |       1. Ajouter une joueur                     |   \n" RESET);
-        printf(YELLOW "                          |       2. Afficher les joueur                    |   \n" RESET);
-        printf(BLUE "                          |       3. Rechercher un joueur                   |   \n" RESET);
-        printf(CYAN "                          |       4. Modifier un joueur                      |   \n" RESET);
-        printf(RED "                          |       5. Supprimer un joueur                     |   \n" RESET);
-        printf("                          |       6. Quitter                                |   \n");
+        printf(GREEN "                          |   1. Ajouter un joueur                          |   \n" RESET);
+        printf(BLUE "                          |   2. Afficher les joueurs                       |   \n" RESET);
+        printf(CYAN "                          |   3. Rechercher un joueur                       |   \n" RESET);
+        printf(YELLOW "                          |   4. Modifier un joueur                         |   \n" RESET);
+        printf(RED "                          |   5. Supprimer un joueur                        |   \n" RESET);
+        printf(GREEN "                          |   6. Nombre total des joueurs                   |   \n" RESET);
+        printf(BLUE "                          |   7. Moyenne d'age des joueurs                  |   \n" RESET);
+        printf(CYAN "                          |   8. Afficher les joueurs avec +X buts          |   \n" RESET);
+        printf(YELLOW "                          |   9. Afficher le meilleur buteur                |   \n" RESET);
+        printf(GREEN "                          |  10. Afficher le joueur le plus age             |   \n" RESET);
+        printf(BLUE "                          |  11. Afficher le joueur le plus jeune           |   \n" RESET);
+        printf(RED "                          |  12. Quitter                                    |   \n" RESET);
         printf("                          |                                                 |   \n");
         printf("                          |*************************************************|   \n\n\n");
+
         printf("Quel est votre choix ? : ");
         scanf("%d", &le_choi);
 
@@ -694,14 +822,117 @@ int menu()
         case 5:
             Supprimer();
             break;
+        case 6:
+            nombreTotalJoueur();
+            break;
+        case 7:
+            moyenAge();
+            break;
+        case 8:
+            afficherJoueursPlusDeXButs();
+            break;
+        case 9:
+            meilleurButeur();
+            break;
+        case 10:
+            joueurPlusAge();
+            break;
+        case 11:
+            joueurPlusJeune();
+            break;
         default:
             break;
         }
 
-    } while (le_choi != 6);
+    } while (le_choi != 12);
+}
+void inialiserDate()
+{
+    equipe[0].id = ++genereId;
+    strcpy(equipe[0].nom, "abderrazak");
+    strcpy(equipe[0].Prenom, "errifaouy");
+    equipe[0].numeroMaillot = 7;
+    strcpy(equipe[0].poste, "attaquant");
+    equipe[0].age = 23;
+    equipe[0].buts = 850;
+
+    equipe[1].id = ++genereId;
+    strcpy(equipe[1].nom, "yassin");
+    strcpy(equipe[1].Prenom, "errifaouy");
+    equipe[1].numeroMaillot = 10;
+    strcpy(equipe[1].poste, "attaquant");
+    equipe[1].age = 36;
+    equipe[1].buts = 800;
+
+    equipe[2].id = ++genereId;
+    strcpy(equipe[2].nom, "hassan");
+    strcpy(equipe[2].Prenom, "younes");
+    equipe[2].numeroMaillot = 11;
+    strcpy(equipe[2].poste, "attaquant");
+    equipe[2].age = 30;
+    equipe[2].buts = 400;
+
+    equipe[3].id = ++genereId;
+    strcpy(equipe[3].nom, "abdollah");
+    strcpy(equipe[3].Prenom, "mohamed");
+    equipe[3].numeroMaillot = 7;
+    strcpy(equipe[3].poste, "milieu");
+    equipe[3].age = 27;
+    equipe[3].buts = 50;
+
+    equipe[4].id = ++genereId;
+    strcpy(equipe[4].nom, "ahmed");
+    strcpy(equipe[4].Prenom, "ben");
+    equipe[4].numeroMaillot = 9;
+    strcpy(equipe[4].poste, "attaquant");
+    equipe[4].age = 25;
+    equipe[4].buts = 100;
+
+    equipe[5].id = ++genereId;
+    strcpy(equipe[5].nom, "younes");
+    strcpy(equipe[5].Prenom, "mohamed");
+    equipe[5].numeroMaillot = 4;
+    strcpy(equipe[5].poste, "defenseur");
+    equipe[5].age = 40;
+    equipe[5].buts = 200;
+
+    equipe[6].id = ++genereId;
+    strcpy(equipe[6].nom, "karim");
+    strcpy(equipe[6].Prenom, "benzema");
+    equipe[6].numeroMaillot = 19;
+    strcpy(equipe[6].poste, "attaquant");
+    equipe[6].age = 35;
+    equipe[6].buts = 300;
+
+    equipe[7].id = ++genereId;
+    strcpy(equipe[7].nom, "yassine");
+    strcpy(equipe[7].Prenom, "bounou");
+    equipe[7].numeroMaillot = 1;
+    strcpy(equipe[7].poste, "gardien");
+    equipe[7].age = 31;
+    equipe[7].buts = 0;
+
+    equipe[8].id = ++genereId;
+    strcpy(equipe[8].nom, "rachid");
+    strcpy(equipe[8].Prenom, "guernaoui");
+    equipe[8].numeroMaillot = 5;
+    strcpy(equipe[8].poste, "defenseur");
+    equipe[8].age = 29;
+    equipe[8].buts = 10;
+
+    equipe[9].id = ++genereId;
+    strcpy(equipe[9].nom, "samir");
+    strcpy(equipe[9].Prenom, "nasri");
+    equipe[9].numeroMaillot = 8;
+    strcpy(equipe[9].poste, "milieu");
+    equipe[9].age = 34;
+    equipe[9].buts = 20;
+
+    conteur = 10;
 }
 
 int main()
 {
+    inialise4rDate();
     menu();
 }
