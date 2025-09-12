@@ -49,11 +49,6 @@ int StringIsValide(char str[])
 
 int valideNumeroMaillot(int numeroMaillot)
 {
-    // if (numeroMaillot <= 0)
-    // {
-    //     return 0;
-    // }
-
     for (int i = 0; i < conteur; i++)
     {
         if (equipe[i].numeroMaillot == numeroMaillot)
@@ -113,7 +108,8 @@ void ajouterUnJoueur(int i)
     do
     {
         printf("                             Entrez le nom du joueur %d : ", i + 1);
-        scanf("%s", equipe[conteur].nom);
+        getchar();
+        scanf("%[^\n]", equipe[conteur].nom);
         printf("                          |                                                                               |\n");
 
         isValide = StringIsValide(equipe[conteur].nom);
@@ -128,7 +124,8 @@ void ajouterUnJoueur(int i)
     do
     {
         printf("                             Entrez le prenom du joueur %d : ", i + 1);
-        scanf("%s", equipe[conteur].Prenom);
+        getchar();
+        scanf("%[^\n]", equipe[conteur].Prenom);
         printf("                          |                                                                               |\n");
 
         isValide = StringIsValide(equipe[conteur].Prenom);
@@ -165,7 +162,8 @@ void ajouterUnJoueur(int i)
     do
     {
         printf("                             Entrez le poste du joueur %d (gardien, defenseur, milieu, attaquant) : ", i + 1);
-        scanf("%s", equipe[conteur].poste);
+        getchar();
+        scanf("%[^\n]", equipe[conteur].poste);
         printf("                          |                                                                               |\n");
 
         isValide = validePoste(equipe[conteur].poste);
@@ -371,7 +369,8 @@ void afficherJoueursByPoste()
     printf(" les postes sont : gardien, defenseur, milieu, attaquant \n");
     char poste[20];
     printf("Entrez le poste : ");
-    scanf("%s", poste);
+    getchar();
+    scanf("%[^\n]", poste);
     if (validePoste(poste))
     {
         Joueur joueurs[100];
@@ -435,7 +434,8 @@ void modifier()
 {
     char nom[50];
     printf("Entrez le nom du joueur a modifier : ");
-    scanf("%s", nom);
+    getchar();
+    scanf("%[^\n]", nom);
     int index = rechercherByNom(nom);
     if (index != -1)
     {
@@ -476,7 +476,8 @@ void modifier()
                 do
                 {
                     printf("Entrez le nouveau poste du joueur %s (gardien, defenseur, milieu, attaquant) : ", nom);
-                    scanf("%s", equipe[index].poste);
+                    getchar();
+                    scanf("%[^\n]", equipe[index].poste);
 
                     isValide = validePoste(equipe[index].poste);
                     if (!isValide)
@@ -498,7 +499,7 @@ void modifier()
                     }
                     else
                     {
-                        isValide = (equipe[index].age > 16 && equipe[index].age <= 45);
+                        isValide = (equipe[index].age >= 16 && equipe[index].age <= 45);
                         if (!isValide)
                         {
                             printf(RED "L'age doit etre entre 16 et 45 !!!\n" RESET);
@@ -622,7 +623,8 @@ void Supprimer()
         case 2:
             char nom[50];
             printf("Entrez l'nom du joueur a supprimer ; ");
-            isValide = scanf("%s", nom);
+            getchar();isValide = 
+            scanf("%[^\n]", nom);
             if (isValide != 1)
             {
                 printf(RED "Le nom doit etre une chaine de caracteres !!!" RESET);
@@ -857,7 +859,8 @@ void menuRechercher()
         case 2:
             char nom[50];
             printf("Entrez l'nom du joueur : ");
-            scanf("%s", nom);
+            getchar();
+            scanf("%[^\n]", nom);
             int indexN = rechercherByNom(nom);
             if (indexN != -1)
             {
