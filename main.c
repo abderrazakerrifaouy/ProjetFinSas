@@ -350,7 +350,7 @@ void affcherJoueursByAge()
     {
         for (int j = 0; j < conteur - 1; j++)
         {
-            if (joueurs[j].age > joueurs[j + 1].age)
+            if (joueurs[j].age < joueurs[j + 1].age)
             {
                 Joueur tmp = joueurs[j];
                 joueurs[j] = joueurs[j + 1];
@@ -1193,3 +1193,5 @@ int main()
     inialiserData();
     menu();
 }
+
+
